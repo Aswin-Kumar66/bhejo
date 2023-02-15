@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const authenticate = require('../../authenticate');
-const cors = require('../cors');
+// const cors = require('../cors');
 
 const Favorites = require('../../models/favorite');
 
@@ -10,10 +10,10 @@ const favoriteRouter = express.Router();
 favoriteRouter.use(bodyParser.json());
 
 favoriteRouter.route('/')
-.options(cors.corsWithOptions, (req, res) => {
+.options((req, res) => {
     res.sendStatus = 200;
 })
-.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .populate('user')
     .populate('products')
@@ -34,7 +34,7 @@ favoriteRouter.route('/')
         next(err);
     });
 })
-.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .then((favorite) => {
         if (favorite != null) {
@@ -108,11 +108,11 @@ favoriteRouter.route('/')
         next(err);
     });
 })
-.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end(`PUT operation not supported on /favorites!`);
 })
-.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOneAndRemove({ user: req.user._id })
     .then((resp) => {
         res.statusCode = 200;
@@ -127,10 +127,10 @@ favoriteRouter.route('/')
 });
 
 favoriteRouter.route('/:productId')
-.options(cors.corsWithOptions, (req, res) => {
+.options((req, res) => {
     res.sendStatus = 200;
 })
-.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .then((favorites) => {
         if (!favorites) {
@@ -154,7 +154,7 @@ favoriteRouter.route('/:productId')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .then((favorite) => {
         if (favorite != null) {
@@ -220,11 +220,11 @@ favoriteRouter.route('/:productId')
         next(err);
     });
 })
-.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end(`PUT operation not supported on /favorites/${req.params.productId}!`);
 })
-.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .then((favorite) => {
         if (favorite != null) {

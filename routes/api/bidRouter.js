@@ -5,14 +5,14 @@ const Bid = require('../../models/bids');
 const Products = require('../../models/products');
 const Users = require('../../models/users');
 const authenticate = require('../../authenticate');
-const cors = require('../cors');
+// const cors = require('../cors');
 
 
 bidRouter.use(bodyParser.json());
 
 bidRouter.route('/')
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get(cors.corsWithOptions, 
+.options( (req, res) => { res.sendStatus(200); })
+.get( 
                   function(req, res, next) {
                     Bid.find({})
                     .populate('bidder')
@@ -27,7 +27,7 @@ bidRouter.route('/')
                   }
 )
 
-.post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
+.post(authenticate.verifyUser,(req, res, next) => {
     Products.findById(req.body.product)
     .then((requiredProduct)=>{
         Users.findById(req.body.bidder)
@@ -86,11 +86,11 @@ bidRouter.route('/')
 
 })
 
-.put(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
+.put(authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /bids');
 })
-.delete(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
+.delete(authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     Bid.remove({})
     .then((resp) => {
         console.log("Removed All Bid");
@@ -102,8 +102,8 @@ bidRouter.route('/')
 })
 
 bidRouter.route('/bidder/')
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
+.options( (req, res) => { res.sendStatus(200); })
+.get(authenticate.verifyUser,(req,res,next) => {
     Bid.find({bidder: req.user._id})
     .populate('bidder')
     .populate('product')
@@ -118,8 +118,8 @@ bidRouter.route('/bidder/')
 
 
 bidRouter.route('/:bidId')
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get(cors.corsWithOptions,authenticate.verifyUser,(req,res,next) => {
+.options( (req, res) => { res.sendStatus(200); })
+.get(authenticate.verifyUser,(req,res,next) => {
     Bid.findById(req.params.bidId)
     .populate('bidder')
     .populate('product')
@@ -145,17 +145,17 @@ bidRouter.route('/:bidId')
     .catch((err)=>(next(err)))
 })
 
-.post(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
+.post(authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /bids/'+ req.params.bidId);
 })
 
-.delete(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
+.delete(authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
     res.statusCode = 403;
     res.end('POST operation not supported on /bids/'+ req.params.bidId);
 })
 
-.put(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
+.put(authenticate.verifyUser,(req, res, next) => {
     Bid.findById(req.params.bidId)
     .then((bid)=>{
     

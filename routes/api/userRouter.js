@@ -11,9 +11,9 @@ router.use(bodyParser.json());
 
 /* GET users listing. */
  
-router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); 
+router.options('*',  (req, res) => { res.sendStatus(200); 
   res.setHeader('Access-Control-Allow-Credentials', 'true');} )
-router.get('/', cors.corsWithOptions,
+router.get('/', 
                   function(req, res, next) {
                     User.find({})
                       .then((users)=>{
@@ -25,7 +25,7 @@ router.get('/', cors.corsWithOptions,
                   }
 );
 
-router.put('/:userId',cors.corsWithOptions,authenticate.verifyUser,
+router.put('/:userId',authenticate.verifyUser,
 function(req,res,next){
   User.findByIdAndUpdate(req.params.userId,{
     $set: req.body
@@ -39,7 +39,7 @@ function(req,res,next){
 })
 
 // For change of password
-router.put('/password/:userId',cors.corsWithOptions,authenticate.verifyUser,
+router.put('/password/:userId',authenticate.verifyUser,
 function(req,res,next){
   User.findById(req.params.userId)
 .then((user) => {
@@ -61,7 +61,7 @@ function(req,res,next){
 })
 
 
-router.post('/signup',cors.corsWithOptions, (req, res, next) => {
+router.post('/signup',(req, res, next) => {
   User.register(new User({username: req.body.username,
     firstname : req.body.firstname,
     lastname : req.body.lastname,
@@ -99,7 +99,7 @@ router.post('/signup',cors.corsWithOptions, (req, res, next) => {
     });
 });
 
-router.post('/login',cors.corsWithOptions, passport.authenticate('local'), (req, res,next) => {
+router.post('/login',passport.authenticate('local'), (req, res,next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err)
       return next(err);
@@ -124,7 +124,7 @@ router.post('/login',cors.corsWithOptions, passport.authenticate('local'), (req,
   }) (req, res, next); // function call IIFE
   });
 
-router.get('/logout',cors.cors, (req, res) => {
+router.get('/logout',(req, res) => {
   if (req.session) {
     req.session.destroy();
     res.clearCookie('session-id');
@@ -137,7 +137,7 @@ router.get('/logout',cors.cors, (req, res) => {
   }
 });
 
-router.get('/checkJWTtoken', cors.corsWithOptions, (req, res) => {
+router.get('/checkJWTtoken',  (req, res) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {
     if (err)
       return next(err);

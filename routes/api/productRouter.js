@@ -29,10 +29,10 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage});
 productRouter
   .route('/')
-  .options(cors.corsWithOptions, (req, res) => {
+  .options((req, res) => {
     res.sendStatus(200);
   })
-  .get(cors.corsWithOptions, (req, res, next) => {
+  .get((req, res, next) => {
     Products.find(req.query)
       .populate('owner')
       .sort({ views: -1 })
@@ -48,7 +48,6 @@ productRouter
   })
 
   .post(
-    cors.corsWithOptions,
     authenticate.verifyUser,
     upload.array('images', 4),
     (req, res, next) => {
@@ -87,7 +86,6 @@ productRouter
     }
   )
   .put(
-    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -97,7 +95,6 @@ productRouter
   )
 
   .delete(
-    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -108,11 +105,11 @@ productRouter
 
 productRouter
   .route('/:productId')
-  .options(cors.corsWithOptions, (req, res) => {
+  .options((req, res) => {
     res.sendStatus(200);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
   })
-  .get(cors.corsWithOptions, (req, res, next) => {
+  .get((req, res, next) => {
     Products.findById(req.params.productId)
       .populate('owner')
       .then(
@@ -127,7 +124,6 @@ productRouter
   })
 
   .post(
-    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -138,7 +134,7 @@ productRouter
     }
   )
 
-  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, (req, res, next) => {
     Products.findByIdAndUpdate(
       req.params.productId,
       {
@@ -158,7 +154,7 @@ productRouter
       .catch(err => res.status(400).json({ success: false }));
   })
 
-  .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+  .delete(authenticate.verifyUser, (req, res, next) => {
     Products.findByIdAndRemove(req.params.productId)
       .then(
         resp => {
@@ -173,12 +169,11 @@ productRouter
 
 productRouter
   .route('/approve/:productId')
-  .options(cors.corsWithOptions, (req, res) => {
+  .options((req, res) => {
     res.sendStatus(200);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
   })
   .post(
-    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
@@ -204,11 +199,11 @@ productRouter
 
 productRouter
   .route('/views/:productId')
-  .options(cors.corsWithOptions, (req, res) => {
+  .options((req, res) => {
     res.sendStatus(200);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
   })
-  .post(cors.corsWithOptions, (req, res, next) => {
+  .post((req, res, next) => {
     console.log({ views: req.body.views });
     Products.findByIdAndUpdate(
       req.params.productId,
