@@ -1,7 +1,7 @@
 const cors = require('cors');
 
 // const whitelist = ['http://localhost:4200'];
-const whitelist = ['http://localhost:3000', 'http://localhost:5000','https://bhejo.herokuapp.com/','https://bhejo.herokuapp.com:3000','https://bhejo.herokuapp.com:5000'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5000','https://bhejo.netlify.app','https://bhejo-backend.onrender.com','https://bhejo-backend.onrender.com/api'];
 const corsOptionsDelegate = (req, callback) => {
     var corsOptions;
     console.log(req.header('Origin'));
